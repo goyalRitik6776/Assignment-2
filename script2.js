@@ -13,8 +13,12 @@ var brickY = canvas.height - brickHeight - 10;
 var rightPressed = false;
 var leftPressed = false;
 
-let lives = document.getElementById("lives");
-let livesCount = Number.parseInt(lives.children[0].innerHTML);
+let lives = document.querySelector(".lives").children[0];
+let livesCount = Number.parseInt(lives.innerHTML);
+
+let score = document.querySelector(".score").children[0];
+let scorePoints = score.innerHTML;
+
 
 var bricksPerRow = 8;
 var brickPadding = 10;
@@ -95,6 +99,9 @@ function detectCollision() {
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedY = -ballSpeedY;
             totalCount--;
+            scorePoints++;
+            score.innerHTML = scorePoints;
+            score.style.color = "red";
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
@@ -103,6 +110,9 @@ function detectCollision() {
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedX = -ballSpeedX;
             totalCount--;
+            scorePoints++;
+            score.innerHTML = scorePoints;
+            score.style.color = "red";
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
@@ -111,6 +121,9 @@ function detectCollision() {
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedX = -ballSpeedX;
             totalCount--;
+            scorePoints++;
+            score.innerHTML = scorePoints;
+            score.style.color = "red";
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
@@ -141,11 +154,17 @@ function update() {
     if (ballY + ballRadius > canvas.height) {
         livesCount--;
         if(livesCount==0){
-            ballSpeedX = 0;
-            ballSpeedY = 0;
-            alert("GAME OVER");
+            let playAgain = confirm('GAME OVER !\nWanna Play Again ? ');
+            if(playAgain){
+                window.location.reload();
+            }else{
+                ballSpeedX = 0;
+                ballSpeedY = 0;    
+            }
+
         }
-        lives.innerHTML = `Lifes : ${livesCount}`;
+        lives.innerHTML = livesCount;
+        lives.style.color = "red";
         ballX = canvas.width / 2 - ballRadius;
         ballY = canvas.height / 2 - ballRadius;
         brickX = canvas.width / 2 - brickWidth / 2;
