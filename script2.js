@@ -17,20 +17,22 @@ let lives = document.getElementById("lives");
 let livesCount = Number.parseInt(lives.children[0].innerHTML);
 
 var bricksPerRow = 8;
-    var brickPadding = 10;
-    var brickOffsetTop = 50;
-    var brickOffsetLeft = 30;
-    var brickWidthTop = (canvas.width - (brickOffsetLeft * 2) - (brickPadding * (bricksPerRow - 1))) / bricksPerRow;
-    var brickHeightTop = 20;
-    var bricks = [];
+var brickPadding = 10;
+var brickOffsetTop = 50;
+var brickOffsetLeft = 30;
+var brickWidthTop = (canvas.width - (brickOffsetLeft * 2) - (brickPadding * (bricksPerRow - 1))) / bricksPerRow;
+var brickHeightTop = 20;
+var bricks = [];
 
-    for (var c = 0; c < bricksPerRow; c++) {
-        for (var r = 0; r < 3; r++) {
-            var brickXTop = (c * (brickWidthTop + brickPadding)) + brickOffsetLeft;
-            var brickYTop = (r * (brickHeightTop + brickPadding)) + brickOffsetTop;
-            bricks.push({ x: brickXTop, y: brickYTop, width: brickWidthTop, height: brickHeightTop, color: "blue", visible: true });
-        }
+
+for (var c = 0; c < bricksPerRow; c++) {
+    for (var r = 0; r < 2; r++) {
+        var brickXTop = (c * (brickWidthTop + brickPadding)) + brickOffsetLeft;
+        var brickYTop = (r * (brickHeightTop + brickPadding)) + brickOffsetTop;
+        bricks.push({ x: brickXTop, y: brickYTop, width: brickWidthTop, height: brickHeightTop, color: "blue", visible: true });
     }
+}
+let totalCount = bricksPerRow*r;
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -76,7 +78,6 @@ function keyUpHandler(e) {
     }
 }
 function detectCollision() {
-    ballCollision = false;
     if (ballX + ballRadius > brickX && ballX - ballRadius < brickX + brickWidth &&
         ballY + ballRadius > brickY && ballY - ballRadius < brickY + brickHeight) {
         ballSpeedY = -ballSpeedY;
@@ -93,6 +94,7 @@ function detectCollision() {
         if (ballX + ballRadius > bricks[i].x && ballX - ballRadius < bricks[i].x + bricks[i].width &&
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedY = -ballSpeedY;
+            totalCount--;
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
@@ -100,6 +102,7 @@ function detectCollision() {
         if (ballX + ballRadius > bricks[i].x && ballX - ballRadius < bricks[i].x &&
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedX = -ballSpeedX;
+            totalCount--;
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
@@ -107,12 +110,12 @@ function detectCollision() {
         if (ballX + ballRadius > bricks[i].x + bricks[i].width && ballX - ballRadius < bricks[i].x + bricks[i].width &&
             ballY + ballRadius > bricks[i].y && ballY - ballRadius < bricks[i].y + bricks[i].height) {
             ballSpeedX = -ballSpeedX;
+            totalCount--;
             bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
         }
     }
-
 }
 
 function update() {
@@ -121,6 +124,12 @@ function update() {
     drawBrick();
     detectCollision();
     drawBrickTop();
+
+    if(totalCount == 0){
+        cancelAnimationFrame(update);
+        alert("HURRAY! You Won")
+    }
+
         
     ballX += ballSpeedX;
     ballY += ballSpeedY;
@@ -163,7 +172,7 @@ function update() {
             brickX = 0;
         }
     }
-
+    if(totalCount>0)
     requestAnimationFrame(update);
 
     
