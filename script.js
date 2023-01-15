@@ -12,9 +12,6 @@ var ballY = brickY - brickHeight;
 var rightPressed = false;
 var leftPressed = false;
 
-let lives = document.querySelector(".lives").children[0];
-let livesCount = Number.parseInt(lives.innerHTML);
-
 let score = document.querySelector(".score").children[0];
 let scorePoints = score.innerHTML;
 
@@ -32,17 +29,13 @@ for (var c = 0; c < bricksPerRow; c++) {
     for (var r = 0; r < 3; r++) {
         var brickXTop = (c * (brickWidthTop + brickPadding)) + brickOffsetLeft;
         var brickYTop = (r * (brickHeightTop + brickPadding)) + brickOffsetTop;
-        bricks.push({ x: brickXTop, y: brickYTop, width: brickWidthTop, height: brickHeightTop, color: "red", visible: true });
+        bricks.push({ x: brickXTop, y: brickYTop, width: brickWidthTop, height: brickHeightTop, color: "red"});
     }
 }
 let totalCount = bricksPerRow*r;
 
 document.addEventListener("keydown", keyRight, false);
 document.addEventListener("keyup", keyLeft, false);
-
-function getRandom (list) {
-    return list[Math.floor((Math.random()*list.length))];
-  }
 
 function drawBall() {
     ctx.beginPath();
@@ -105,7 +98,6 @@ function detectCollision() {
             scorePoints++;
             score.innerHTML = scorePoints;
             score.style.color = "red";
-            bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
         }
@@ -116,7 +108,6 @@ function detectCollision() {
             scorePoints++;
             score.innerHTML = scorePoints;
             score.style.color = "red";
-            bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
         }
@@ -127,7 +118,6 @@ function detectCollision() {
             scorePoints++;
             score.innerHTML = scorePoints;
             score.style.color = "red";
-            bricks[i].visible = false;
             bricks[i].x = -1000;
             bricks[i].y = -1000;
         }
@@ -154,26 +144,7 @@ function update() {
         ballSpeedX = -ballSpeedX;
     }
 
-    if (ballY + ballRadius > canvas.height) {
-        livesCount--;
-        if(livesCount==0){
-            let playAgain = confirm('GAME OVER !\nWanna Play Again ? ');
-            if(playAgain){
-                window.location.reload();
-            }else{
-                ballSpeedX = 0;
-                ballSpeedY = 0;    
-            }
-
-        }
-        lives.innerHTML = livesCount;
-        lives.style.color = "red";
-        brickX = canvas.width / 2 - brickWidth / 2;
-        brickY = canvas.height - brickHeight - 10;
-        ballX = brickX + brickWidth/2;;
-        ballY = brickY;
-    }
-    if(ballY - ballRadius < 0){
+    if(ballY - ballRadius < 0 || ballY + ballRadius > canvas.height){
             ballSpeedY = -ballSpeedY;
     }
         // check if ball collides with white brick
